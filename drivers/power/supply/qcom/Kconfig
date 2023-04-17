@@ -122,6 +122,15 @@ config QPNP_QNOVO5
 	  the hardware module. It also allows userspace code to read diagnostics
 	  of voltage and current measured during certain phases of the pulses.
 
+config QPNP_FG
+	tristate "QPNP fuel gauge driver"
+	depends on MFD_SPMI_PMIC
+	help
+	  Say Y here to enable the Fuel Gauge driver. This adds support for
+	  battery fuel gauging and state of charge of battery connected to the
+	  fuel gauge. The state of charge is reported through a BMS power
+	  supply property and also sends uevents when the capacity is updated.
+
 config QPNP_FG_GEN3
         tristate "QPNP GEN3 fuel gauge driver"
         depends on MFD_SPMI_PMIC
@@ -149,6 +158,15 @@ config QPNP_QG
 	  which uses the periodic sampling of the battery voltage and current
 	  to determine the battery state-of-charge (SOC) and supports other
 	  battery management features.
+
+config QPNP_SMBCHARGER
+	tristate "QPNP SMB Charger driver"
+	depends on MFD_SPMI_PMIC
+	help
+	  Say Y here to enable the dual path switch mode battery charger which
+	  supports USB detection and battery charging up to 3A.
+	  The driver also offers relevant information to userspace via the
+	  power supply framework.
 
 config HL6111R
 	bool "HL6111R driver"
