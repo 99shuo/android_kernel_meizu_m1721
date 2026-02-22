@@ -60,6 +60,7 @@ obj-$(CONFIG_INPUT_PM8XXX_VIBRATOR)	+= pm8xxx-vibrator.o
 obj-$(CONFIG_INPUT_PMIC8XXX_PWRKEY)	+= pmic8xxx-pwrkey.o
 obj-$(CONFIG_INPUT_QPNP_POWER_ON)	+= qpnp-power-on.o
 obj-$(CONFIG_INPUT_QTI_HAPTICS)		+= qti-haptics.o
+obj-$(CONFIG_INPUT_QTI_HAPTICS_MI8953)		+= qti-haptics-mi8953.o
 obj-$(CONFIG_INPUT_POWERMATE)		+= powermate.o
 obj-$(CONFIG_INPUT_PWM_BEEPER)		+= pwm-beeper.o
 obj-$(CONFIG_INPUT_PWM_VIBRA)		+= pwm-vibra.o
