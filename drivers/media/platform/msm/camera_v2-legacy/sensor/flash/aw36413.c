@@ -25,6 +25,7 @@
 #include <linux/proc_fs.h>
 #include <linux/stddef.h>
 #include <linux/types.h>
+#include <linux/of_gpio.h>
 #include <media/meizu_hw.h>
 
 static struct msm_led_flash_ctrl_t fctrl;
@@ -224,9 +225,11 @@ static int aw36413_request_gpio(void) {
 
   return 0;
 strobe:
-  gpio_free(aw36413->hwen2);
+  if (gpio_is_valid(aw36413->hwen2))
+    gpio_free(aw36413->hwen2);
 hwen2:
-  gpio_free(aw36413->hwen1);
+  if (gpio_is_valid(aw36413->hwen1))
+    gpio_free(aw36413->hwen1);
 hwen1:
   return ret;
 }
@@ -234,12 +237,27 @@ hwen1:
 static int msm_flash_aw36413_i2c_probe(struct i2c_client *client,
                                        const struct i2c_device_id *id) {
   int ret;
-
+  struct device_node *np = client->dev.of_node;
+ 
   aw36413 = kzalloc(sizeof(struct aw36413_cfg *), GFP_KERNEL);
   aw36413->id = aw36413_i2c_id;
-  aw36413->hwen1 = 95;
-  aw36413->hwen2 = 93;
-  aw36413->strobe = 96;
+ 
+  if (np) {
+    aw36413->hwen1 = of_get_named_gpio(np, "hwen1-gpios", 0);
+    if (!gpio_is_valid(aw36413->hwen1))
+      aw_err("hwen1-gpios not valid\n");
+ 
+    aw36413->hwen2 = of_get_named_gpio(np, "hwen2-gpios", 0);
+    if (!gpio_is_valid(aw36413->hwen2))
+      aw_err("hwen2-gpios not valid\n");
+ 
+    aw36413->strobe = of_get_named_gpio(np, "strobe-gpios", 0);
+    if (!gpio_is_valid(aw36413->strobe))
+      aw_err("strobe-gpios not valid\n");
+  } else {
+    aw_err("No device tree node, using default GPIOs\n");
+  }
+ 
   aw36413->a1 = i2c_get_adapter(6);
   aw36413->a2 = i2c_get_adapter(5);
   client->adapter = aw36413->a1;
@@ -310,10 +328,14 @@ static int msm_flash_aw36413_i2c_remove(struct i2c_client *client) {
       return ret;
     }
   }
-
-  gpio_free(aw36413->hwen1);
-  gpio_free(aw36413->hwen2);
-  gpio_free(aw36413->strobe);
+ 
+  if (gpio_is_valid(aw36413->hwen1))
+    gpio_free(aw36413->hwen1);
+  if (gpio_is_valid(aw36413->hwen2))
+    gpio_free(aw36413->hwen2);
+  if (gpio_is_valid(aw36413->strobe))
+    gpio_free(aw36413->strobe);
+ 
   aw_info("done\n");
   aw36413->probed = 0;
   return ret;
