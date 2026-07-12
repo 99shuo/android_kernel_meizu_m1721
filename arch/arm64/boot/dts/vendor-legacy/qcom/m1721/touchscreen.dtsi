@@ -1,0 +1,47 @@
+&soc {
+	i2c@78b7000 { /* BLSP1 QUP3 */
+		/* Required for very chinese touchscreens */
+		qcom,disable-dma;
+		
+		focaltech@38 {
+            reg = <0x38>;
+            compatible = "focaltech,fts";
+
+            interrupt-parent = <&tlmm>;
+            interrupts = <65 0x2>;
+            vdd-supply = <&pm8953_l10>;
+            vcc_i2c-supply = <&pm8953_l6>;
+
+            focaltech,display-coords = <0 0 1080 1920>;
+            focaltech,max-touch-number = <10>;
+            focaltech,wakeup-gestures-en;
+            focaltech,reset-gpio = <&tlmm 64 0x0>;
+            focaltech,irq-gpio = <&tlmm 65 0x2008>;
+            
+            /* pins used by touchscreen */
+            pinctrl-names = "pmx_ts_active", 
+                            "pmx_ts_suspend",
+                            "pmx_ts_release";
+            pinctrl-0 = <&ts_int_active &ts_reset_active>;
+            pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
+            pinctrl-2 = <&ts_release>;
+        };
+
+		goodix_ts@5d {
+			compatible = "goodix,gt9xx";
+			reg = <0x5d>;
+			interrupt-parent = <&tlmm>;
+			interrupts = <65 0x2008>;
+			pinctrl-names = "pmx_ts_active","pmx_ts_suspend",
+					"pmx_ts_release";
+			pinctrl-0 = <&ts_int_active &ts_reset_active>;
+			pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
+			pinctrl-2 = <&ts_release>;
+			vdd_ana-supply = <&pm8953_l10>;
+			vcc_i2c-supply = <&pm8953_l6>;
+			goodix,rst-gpio = <&tlmm 64 0x0>;
+			goodix,irq-gpio = <&tlmm 65 0x2008>;
+			goodix,cfg-group0 = <0x46380480 0x70a3d00 0x1c52808 0x50320305 0x4022 0x617 0x191e1487 0x27cc1f21 0x43067c06 0x19b3311 0x0 0x0 0x431c 0x5a858084 0x41e0804 0x801f0065 0x28005232 0x433f00 0x37500037 0x0 0x0 0x90 0x1000000 0xff6f 0x330028 0x0 0xa4600 0x28 0x11121314 0x15161710 0xf0e0d0c 0xb0a0908 0x7060504 0x3020100 0xffffffff 0xffff0a08 0x6050402 0x1e1f20 0x22242829 0xffffff78 0x11000000 0x88701200 0x0 0x1e5a0f66 0x55000020 0x2201155 0x0 0x0 0x3 0x32000501 0xac800 0x0 0x0 0x0 0x0 0x0 0x2301>;
+		};
+	};
+};

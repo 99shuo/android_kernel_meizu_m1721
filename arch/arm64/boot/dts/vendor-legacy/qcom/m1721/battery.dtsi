@@ -1,0 +1,6 @@
+/{
+	qrd_batterydata: qcom,battery-data {
+		qcom,batt-id-range-pct = <24>;
+		#include "batterydata/msm8953-batterydata-m1721.dtsi"
+	};
+};

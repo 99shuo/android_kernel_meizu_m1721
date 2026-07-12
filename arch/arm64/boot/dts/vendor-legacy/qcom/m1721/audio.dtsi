@@ -1,0 +1,115 @@
+&int_codec {
+	status = "ok";
+	/* already defined in msm8953-audio.dtsi */
+	qcom,msm-hs-micbias-type = "internal";
+	qcom,quat-mi2s-gpios = <&cdc_quat_mi2s_gpios>;
+	qcom,audio-routing =
+		"RX_BIAS", "MCLK",
+		"SPK_RX_BIAS", "MCLK",
+		"INT_LDO_H", "MCLK",
+		"MIC BIAS External", "Handset Mic",
+		"MIC BIAS Internal2", "Headset Mic",
+		"MIC BIAS External", "Secondary Mic",
+		"AMIC1", "MIC BIAS External",
+		"AMIC2", "MIC BIAS Internal2",
+		"AMIC3", "MIC BIAS External";
+	/delete-property/msm-vdd-wsa-switch-supply;
+	/delete-property/qcom,msm-vdd-wsa-switch-voltage;
+	/delete-property/qcom,msm-vdd-wsa-switch-current;
+	/delete-property/qcom,quin-mi2s-gpios;
+};
+
+&soc {
+	i2c@7af8000 { /* BLSP2 QUP4 */
+		status = "ok";
+
+		// For stability...?
+		qcom,disable-dma;
+
+        cs35l35@40 {
+			compatible = "cirrus,cs35l35";
+			reg = <0x40>;
+			reset-gpio = <&tlmm 91 0>;
+			irq-gpio = <&tlmm 90 1>;
+			interrupt-parent = <&tlmm>;
+			interrupts = <90 8>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&cs35l35_default &cs35l35_irq_default>;
+			cirrus,boost-ctl-millivolt = <8500>;
+			cirrus,audio-channel = <0>;
+			cirrus,boost-ind-nanohenry = <1200>;
+			status = "ok";
+
+			cirrus,classh-internal-algo {
+				cirrus,classh-bst-overide;
+				cirrus,classh-bst-max-limit = <0x1>;
+				cirrus,classh-mem-depth = <0x1>;
+				cirrus,classh-release-rate = <0x3>;
+				cirrus,classh-headroom = <0x8>;
+				cirrus,classh-wk-fet-disable = <0x0>;
+				cirrus,classh-wk-fet-delay = <0x4>;
+				cirrus,classh-wk-fet-thld = <0x1>;
+				cirrus,classh-vpch-auto = <0x1>;
+				cirrus,classh-vpch-rate = <0x2>;
+				cirrus,classh-vpch-man = <0x5>;
+			};
+
+			cirrus,monitor-signal-format {
+				cirrus,imon = /bits/ 8 <0x03 0x00 0x01>;
+				cirrus,vmon = /bits/ 8 <0x03 0x00 0x00>;
+				cirrus,vpmon = /bits/ 8 <0x00 0x04 0x00>;
+				cirrus,vbstmon = /bits/ 8 <0x00 0x04 0x01>;
+				cirrus,vpbrstat = /bits/ 8 <0x00 0x04 0x00>;
+				cirrus,zerofill = /bits/ 8 <0x00 0x00 0x00>;
+			};
+		};
+	};
+
+	msm_cdc_pinctrl_quin {
+		status = "disabled";
+	};
+
+	cdc_quat_mi2s_gpios: msm_cdc_pinctrl_quat {
+		compatible = "qcom,msm-cdc-pinctrl";
+		pinctrl-names = "aud_active", "aud_sleep";
+		pinctrl-0 = <&cs35l35_mclk_on &sec_tlmm_lines_act>;
+		pinctrl-1 = <&cs35l35_mclk_off &sec_tlmm_lines_sus>;
+	};
+};
+
+/* msm8953-audio */
+&msm_digital_codec {
+		status = "okay";
+};
+
+&pmic_analog_codec {
+		status = "okay";
+};
+
+&ext_codec {
+	status = "disabled";
+};
+
+&slim_msm {
+	status = "disabled";
+};
+
+&dai_slim {
+	status = "disabled";
+};
+
+&wcd9xxx_intc {
+	status = "disabled";
+};
+
+&clock_audio {
+	status = "disabled";
+};
+
+&wcd9335 {
+	status = "disabled";
+};
+
+&wcd_rst_gpio {
+	status = "disabled";
+};

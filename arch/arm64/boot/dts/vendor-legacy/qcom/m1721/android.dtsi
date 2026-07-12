@@ -1,0 +1,44 @@
+&firmware {
+	android {
+		/delete-node/ vbmeta;
+		fstab {
+			vendor {
+				dev = "/dev/block/platform/soc/7824900.sdhci/by-name/custom";
+				fsmgr_flags = "wait";
+			};
+		};
+	};
+};
+
+&apps_iommu {
+	qcom,no-aarch64;
+};
+
+&soc {
+	/delete-node/ gpio_keys;
+	gpio_keys {
+		compatible = "gpio-keys";
+		label = "gpio-keys";
+		pinctrl-names = "default";
+		pinctrl-0 = <&gpio_key_active>;
+
+		vol_up {
+			label = "volume_up";
+			gpios = <&tlmm 85 0x1>;
+			linux,input-type = <1>;
+			linux,code = <115>;
+			debounce-interval = <15>;
+			linux,can-disable;
+			gpio-key,wakeup;
+		};
+
+		home {
+			label = "home";
+			gpios = <&tlmm 141 0x1>;
+			linux,input-type = <1>;
+			linux,code = <102>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+		};
+	};
+};

@@ -1,0 +1,30 @@
+/ {
+	qcom,enable-legacy-adsp-hacks;
+};
+
+&int_codec {
+    qcom,msm-mbhc-hphl-swh = <1>;
+	qcom,msm-mbhc-gnd-swh = <1>;
+	/delete-property/asoc-wsa-codec-names;
+	/delete-property/asoc-wsa-codec-prefixes;
+};
+
+&wsa881x_i2c_f {
+        status = "disabled";
+};
+
+&wsa881x_i2c_45 {
+        status = "disabled";
+};
+
+&wsa881x_analog_vi_gpio {
+        status = "disabled";
+};
+
+&wsa881x_analog_clk_gpio {
+        status = "disabled";
+};
+
+&wsa881x_analog_reset_gpio {
+        status = "disabled";
+};
